@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -13,6 +14,7 @@ namespace Multas.Models
             ListaDeMultas = new HashSet<Multas>();
         }
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int ID { get; set; } // chave primaria 
             
         [Required(ErrorMessage ="O {0} é de preenchimento obrigatorio")] // o atributo nome e de preenchimento obrigatorio
@@ -24,7 +26,7 @@ namespace Multas.Models
         public string Fotografia { get; set; }
 
         [Required(ErrorMessage = "O {0} é de preenchimento obrigatorio")] // o atributo nome e de preenchimento obrigatorio
-        [RegularExpression("[A-Za-z 0-9-]+",ErrorMessage ="Nome invalido")] 
+        [RegularExpression("[A-Za-zé 0-9-]+",ErrorMessage ="Nome invalido")] 
         public string Esquadra { get; set; }
 
         //complementar a informaçao sobre o relacionamento de um agente com as multas por ele passadas

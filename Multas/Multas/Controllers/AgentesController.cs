@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -64,22 +65,53 @@ namespace Multas.Controllers
         [HttpPost]
         //protege o metodo contra ataques de roubo de identidade
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Nome,Fotografia,Esquadra")] Agentes agentes)
+        public ActionResult Create([Bind(Include = "Nome,Esquadra")] Agentes agente,HttpPostedFileBase fileUploadFotografia
+            )
         {
+            //determinar o ID do agente
+
+            int novoID = db.Agentes.Max(a => a.ID) + 1;
+
+            //atribuir o id ao novo agente
+            agente.ID = novoID;
+
+            //var auxiliar
+            string nomeFotografia = "Agente " + novoID + ".jpg";
+            string caminhoParaFotografia = Path.Combine(Server.MapPath("~/imagens/"),nomeFotografia);
+
+            //escrever a fotografia no disco rigido 
+            //verificar se chega efetivamente um ficheiro ao servidor
+            if (fileUploadFotografia != null)
+            {
+                //guardar o nome da imagem na bd
+                agente.Fotografia = nomeFotografia;
+
+
+            }
+            else //nao ha imagem 
+            {
+                ModelState.AddModelError("", "Não foi fornecida uma imagem...");
+                return View(agente);//reenvia os dados do agente para a view
+            }
+
+
             //ModelState.IsValid --> confronta os dados fornecidos com o modelo
             // se nao respeitar as regras do modelo rejeita os dados
             if (ModelState.IsValid)
             {
                 //adiciona na estrutura de dados ,na memoria do servidor,
                 //o obejto agentes
-                db.Agentes.Add(agentes);
+                db.Agentes.Add(agente);
                 //redireciona o utilizador oara a pagina de inicio
 
                 db.SaveChanges();
+                //guardar a imagem no disco rigido 
+                fileUploadFotografia.SaveAs(caminhoParaFotografia);
+
                 return RedirectToAction("Index");
             }
 
-            return View(agentes);
+            return View(agente);
         }
 
         // GET: Agentes/Edit/5

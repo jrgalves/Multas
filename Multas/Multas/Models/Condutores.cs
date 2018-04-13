@@ -27,7 +27,7 @@ namespace Multas.Models
         public DateTime DataNascimento { get; set; }
 
         // dados carta de conduçao do condutor 
-        public string numCartaConducao { get; set; }
+        public string NumCartaConducao { get; set; }
 
         public string LocalEmissao { get; set; }
 
